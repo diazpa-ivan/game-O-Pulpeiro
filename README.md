@@ -8,4 +8,4 @@ Documentación del juego:
 https://docs.google.com/document/d/1PId2_fH4lBeUngg6a_pmJa7taV-TszS7rR4lZqlQEUk/edit?tab=t.0
 
 Enlace Trello:
-https://trello.com/b/84siTbQb/mi-tablero-de-trello
+https://trello.com/invite/b/693ff8168a01f082225e6cb2/ATTI5f46dcd5b2245bec1e6a2c8a5a6de98860A2F588/mi-tablero-de-trello
