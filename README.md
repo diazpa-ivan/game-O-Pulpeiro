@@ -1,5 +1,5 @@
 # game-O-Pulpeiro
-**Juego -O Pulpeiro-**🐙
+**Juego -O Pulpeiro🐙-**
 
 Descripción completa del juego:
 
