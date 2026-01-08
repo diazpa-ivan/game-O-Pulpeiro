@@ -8,6 +8,8 @@ canvas.height = 300;
 const CELL_SIZE = 15
 let sizeOctopus = CELL_SIZE
 const positionOctopus = {positionX: 4, positionY: 8}
+let lastTime = 0
+const SPEED = 900
 
 
 function paintBackground() {
@@ -23,15 +25,19 @@ function paintOctopus() {
     ctx.fillRect(positionX, positionY, sizeOctopus, sizeOctopus)
 }
 
-function gameLoop() {
-    positionOctopus.positionX += 1
+function gameLoop(timestamp) {
+    if(timestamp - lastTime >= SPEED){
+        positionOctopus.positionX += 1
 
-    paintBackground()
-    paintOctopus()
+        paintBackground()
+        paintOctopus()
+
+        lastTime = timestamp
+    }
+    requestAnimationFrame(gameLoop)
 }
 
 paintBackground()
 paintOctopus()
 
-setInterval(gameLoop, 900)
-
+requestAnimationFrame(gameLoop)
