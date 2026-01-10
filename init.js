@@ -16,20 +16,24 @@ octopusImage.src = "assets/images/octopus.png"
 
 let direction = "right"
 
-document.addEventListener("keydown", function(event) {
+document.addEventListener("keydown", (event) => {
   switch(event.key) {
     case "ArrowUp":
-      if(direction !== "down") direction = "up";
-      break;
+      if(direction !== "down"){
+        direction = "up"
+        break}
     case "ArrowDown":
-      if(direction !== "up") direction = "down";
-      break;
+      if(direction !== "up"){
+        direction = "down"
+        break}
     case "ArrowLeft":
-      if(direction !== "right") direction = "left";
-      break;
+      if(direction !== "right"){
+        direction = "left"
+        break}
     case "ArrowRight":
-      if(direction !== "left") direction = "right";
-      break;
+      if(direction !== "left"){
+        direction = "right"
+        break}
   }
 });
 
@@ -49,11 +53,18 @@ function paintOctopus() {
 function gameLoop(timestamp) {
     if(timestamp - lastTime >= SPEED){
     
-        if(direction === "right") positionOctopus.positionX += 1;
-        if(direction === "left")  positionOctopus.positionX -= 1;
-        if(direction === "up")    positionOctopus.positionY -= 1;
-        if(direction === "down")  positionOctopus.positionY += 1;
-
+        if(direction === "right"){
+          positionOctopus.positionX += 1
+        }
+        if(direction === "left"){
+          positionOctopus.positionX -= 1
+        }
+        if(direction === "up"){
+          positionOctopus.positionY -= 1
+        }
+        if(direction === "down"){
+          positionOctopus.positionY += 1
+        }
 
         paintBackground()
         paintOctopus()
