@@ -7,7 +7,8 @@ canvas.height = 300;
 
 const CELL_SIZE = 15
 let sizeOctopus = CELL_SIZE
-const positionOctopus = {positionX: 4, positionY: 8}
+let positionOctopus = {positionX: 4, positionY: 8}
+let positionCachelo = {positionX:8, positionY:15}
 let lastTime = 0
 const SPEED = 900
 
@@ -44,10 +45,23 @@ function paintBackground() {
 }
 
 function paintOctopus() {
-    let positionX = positionOctopus.positionX * CELL_SIZE
-    let positionY = positionOctopus.positionY * CELL_SIZE
+    let targetSize = CELL_SIZE * 3
+    
+    
+    let offset = (targetSize - CELL_SIZE) / 2
 
-    ctx.drawImage(octopusImage, positionX, positionY, sizeOctopus*3, sizeOctopus*3)
+    let drawX = (positionOctopus.positionX * CELL_SIZE) - offset
+    let drawY = (positionOctopus.positionY * CELL_SIZE) - offset
+
+    ctx.drawImage(octopusImage, drawX, drawY, targetSize, targetSize)
+}
+
+function paintCachelo(){
+    let positionX = positionCachelo.positionX * CELL_SIZE
+    let positionY = positionCachelo.positionY * CELL_SIZE
+
+    ctx.fillStyle = "orange"
+    ctx.fillRect(positionX, positionY, CELL_SIZE, CELL_SIZE)
 }
 
 function gameLoop(timestamp) {
@@ -66,8 +80,18 @@ function gameLoop(timestamp) {
           positionOctopus.positionY += 1
         }
 
+    if(positionOctopus.positionX === positionCachelo.positionX && 
+    positionOctopus.positionY === positionCachelo.positionY) {
+      positionCachelo.positionX = Math.floor(Math.random() * 20)
+      positionCachelo.positionY = Math.floor(Math.random() * 20)
+
+      console.log("¡Ñam!")
+    }
+
         paintBackground()
+        paintCachelo()
         paintOctopus()
+        
 
         lastTime = timestamp
     }
