@@ -2,20 +2,24 @@ const canvas = document.getElementById("game");
 const ctx = canvas.getContext("2d");
 
 canvas.width = 300;
-canvas.height = 300;
+canvas.height = 330;
 
 const CELL_SIZE = 15;
 const GRID_SIZE = 20;
+const SCORE_MARGIN = 30;
 let sizeOctopus = CELL_SIZE;
 let positionOctopus = { positionX: 4, positionY: 8 };
 let positionCachelo = { positionX: 8, positionY: 15 };
 let lastTime = 0;
 const SPEED = 900;
+let scoreGame = 0;
+let direction = "right";
 
 const octopusImage = new Image();
 octopusImage.src = "assets/images/octopus.png";
 
-let direction = "right";
+const cacheloImage = new Image();
+cacheloImage.src = "assets/images/cachelo.png";
 
 document.addEventListener("keydown", (event) => {
   switch (event.key) {
@@ -48,22 +52,31 @@ function paintBackground() {
 }
 
 function paintOctopus() {
-  let targetSize = CELL_SIZE * 3;
+  let sizeOctopus = CELL_SIZE * 3;
 
-  let offset = (targetSize - CELL_SIZE) / 2;
+  let offset = (sizeOctopus - CELL_SIZE) / 2;
 
-  let drawX = positionOctopus.positionX * CELL_SIZE - offset;
-  let drawY = positionOctopus.positionY * CELL_SIZE - offset;
+  let drawX = positionOctopus.positionX * CELL_SIZE - offset
+  let drawY = positionOctopus.positionY * CELL_SIZE - offset + SCORE_MARGIN
 
-  ctx.drawImage(octopusImage, drawX, drawY, targetSize, targetSize);
+  ctx.drawImage(octopusImage, drawX, drawY, sizeOctopus, sizeOctopus);
 }
 
 function paintCachelo() {
-  let positionX = positionCachelo.positionX * CELL_SIZE;
-  let positionY = positionCachelo.positionY * CELL_SIZE;
+  let sizeCachelo = CELL_SIZE * 2;
 
-  ctx.fillStyle = "orange";
-  ctx.fillRect(positionX, positionY, CELL_SIZE, CELL_SIZE);
+  let offset = (sizeCachelo - CELL_SIZE) / 2;
+
+  let positionX = positionCachelo.positionX * CELL_SIZE - offset
+  let positionY = positionCachelo.positionY * CELL_SIZE - offset + SCORE_MARGIN
+
+  ctx.drawImage(cacheloImage, positionX, positionY, sizeCachelo, sizeCachelo);
+}
+
+function paintScore(){
+  ctx.fillStyle = "black"
+  ctx.font = "16px Arial"
+  ctx.fillText("Puntos: " + scoreGame, 10, 20)
 }
 
 function gameLoop(timestamp) {
@@ -88,11 +101,14 @@ function gameLoop(timestamp) {
     if (hasCaughtCachelo) {
       positionCachelo.positionX = Math.floor(Math.random() * GRID_SIZE);
       positionCachelo.positionY = Math.floor(Math.random() * GRID_SIZE);
+
+      scoreGame += 10;
     }
 
-    paintBackground();
-    paintCachelo();
-    paintOctopus();
+    paintBackground()
+    paintCachelo()
+    paintOctopus()
+    paintScore()
 
     lastTime = timestamp;
   }
