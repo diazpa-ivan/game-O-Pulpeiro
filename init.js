@@ -139,7 +139,7 @@ function gameLoop(timestamp) {
       positionCachelo.y = Math.floor(Math.random() * GRID_SIZE)
 
       scoreGame += 10
-      if(SPEED_OCTOPUS > 150){
+      if (SPEED_OCTOPUS > 150) {
         SPEED_OCTOPUS -= 120
       }
     }
