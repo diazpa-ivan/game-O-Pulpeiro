@@ -14,6 +14,7 @@ let lastTime = 0;
 const SPEED = 900;
 let scoreGame = 0;
 let direction = "right";
+let isGameOver = false;
 
 const octopusImage = new Image();
 octopusImage.src = "assets/images/octopus.png";
@@ -56,8 +57,8 @@ function paintOctopus() {
 
   let offset = (sizeOctopus - CELL_SIZE) / 2;
 
-  let drawX = positionOctopus.positionX * CELL_SIZE - offset
-  let drawY = positionOctopus.positionY * CELL_SIZE - offset + SCORE_MARGIN
+  let drawX = positionOctopus.positionX * CELL_SIZE - offset;
+  let drawY = positionOctopus.positionY * CELL_SIZE - offset + SCORE_MARGIN;
 
   ctx.drawImage(octopusImage, drawX, drawY, sizeOctopus, sizeOctopus);
 }
@@ -67,19 +68,48 @@ function paintCachelo() {
 
   let offset = (sizeCachelo - CELL_SIZE) / 2;
 
-  let positionX = positionCachelo.positionX * CELL_SIZE - offset
-  let positionY = positionCachelo.positionY * CELL_SIZE - offset + SCORE_MARGIN
+  let positionX = positionCachelo.positionX * CELL_SIZE - offset;
+  let positionY = positionCachelo.positionY * CELL_SIZE - offset + SCORE_MARGIN;
 
   ctx.drawImage(cacheloImage, positionX, positionY, sizeCachelo, sizeCachelo);
 }
 
-function paintScore(){
-  ctx.fillStyle = "black"
-  ctx.font = "16px Arial"
-  ctx.fillText("Puntos: " + scoreGame, 10, 20)
+function paintScore() {
+  ctx.fillStyle = "black";
+  ctx.font = "16px Arial";
+  ctx.fillText("Puntos: " + scoreGame, 10, 20);
+}
+
+function checkGameOver() {
+  const outGrid =
+    positionOctopus.positionX < 0 ||
+    positionOctopus.positionX >= GRID_SIZE ||
+    positionOctopus.positionY < 0 ||
+    positionOctopus.positionY >= GRID_SIZE;
+
+  if (outGrid) {
+    isGameOver = true;
+    console.log("Game Over");
+  }
+}
+
+function paintGameOver(){
+  ctx.fillStyle = "rgba(0, 0, 0, 0.7)"
+  ctx.fillRect(0, 0, canvas.width, canvas.height)
+
+  ctx.fillStyle = "white"
+  ctx.font = "30px Arial"
+  ctx.textAlign = "center"
+  ctx.fillText("GAME OVER", canvas.width / 2, canvas.height / 2)
+  ctx.fillText("Puntuación: " + scoreGame, canvas.width / 2, (canvas.height / 2) + 40)
 }
 
 function gameLoop(timestamp) {
+  if (isGameOver) {
+    paintGameOver()
+    return
+  }
+
   if (timestamp - lastTime >= SPEED) {
     if (direction === "right") {
       positionOctopus.positionX += 1;
@@ -94,6 +124,9 @@ function gameLoop(timestamp) {
       positionOctopus.positionY += 1;
     }
 
+    checkGameOver()
+    
+
     const hasCaughtCachelo =
       positionOctopus.positionX === positionCachelo.positionX &&
       positionOctopus.positionY === positionCachelo.positionY;
@@ -105,10 +138,10 @@ function gameLoop(timestamp) {
       scoreGame += 10;
     }
 
-    paintBackground()
-    paintCachelo()
-    paintOctopus()
-    paintScore()
+    paintBackground();
+    paintCachelo();
+    paintOctopus();
+    paintScore();
 
     lastTime = timestamp;
   }
