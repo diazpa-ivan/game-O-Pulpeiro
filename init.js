@@ -1,5 +1,14 @@
 const canvas = document.getElementById("game")
 const ctx = canvas.getContext("2d")
+const startButton = document.getElementById("start-button")
+const startMenu = document.getElementById("start-menu")
+const splash = document.getElementById("splash-screen")
+const gameMusic = new Audio("assets/song-game.mp3")
+const soundToggle = document.getElementById("sound-toggle")
+gameMusic.loop = true
+gameMusic.preload = "auto"
+gameMusic.load()
+gameMusic.volume = 0.4
 
 canvas.width = 300
 canvas.height = 330
@@ -15,12 +24,36 @@ let SPEED_OCTOPUS = 900
 let scoreGame = 0
 let direction = "right"
 let isGameOver = false
+let highScores = [0, 0, 0]
+let musicMuted = false
 
 const octopusImage = new Image()
 octopusImage.src = "assets/images/octopus.png"
 
 const cacheloImage = new Image()
 cacheloImage.src = "assets/images/cachelo.png"
+
+soundToggle.addEventListener("click", () => {
+  musicMuted = !musicMuted
+  gameMusic.muted = musicMuted
+
+  if (musicMuted) {
+    soundToggle.innerText = "🔇"
+  } else {
+    soundToggle.innerText = "🔊"
+  }
+})
+
+setTimeout(() => {
+  splash.style.display = "none"
+}, 4000)
+
+startButton.addEventListener("click", () => {
+  resetGame()
+  startMenu.style.display = "none"
+  gameMusic.play()
+  requestAnimationFrame(gameLoop)
+})
 
 document.addEventListener("keydown", (event) => {
   switch (event.key) {
@@ -46,6 +79,16 @@ document.addEventListener("keydown", (event) => {
       }
   }
 })
+
+function resetGame() {
+  updateHighScoreMenu()
+  isGameOver = false
+  scoreGame = 0
+  octopusBody = [{ x: 4, y: 8 }]
+  SPEED_OCTOPUS = 900
+  direction = "right"
+  lastTime = 0
+}
 
 function paintBackground() {
   ctx.fillStyle = "#9DBA6F"
@@ -81,11 +124,26 @@ function paintScore() {
   ctx.fillText("Puntos: " + scoreGame, 10, 20)
 }
 
+function updateHighScoreMenu() {
+  const scoreElements = document.querySelectorAll("#score-list li")
+
+  highScores.forEach((score, index) => {
+    if (scoreElements[index]) {
+      scoreElements[index].innerText = score > 0 ? score : "---"
+    }
+  })
+}
+
 function checkGameOver(head) {
   const outGrid =
     head.x < 0 || head.x >= GRID_SIZE || head.y < 0 || head.y >= GRID_SIZE
 
   if (outGrid) {
+    highScores.unshift(scoreGame)
+    highScores.sort((a, b) => {
+      return b - a
+    })
+    highScores = highScores.slice(0, 3)
     isGameOver = true
   }
 }
@@ -101,8 +159,12 @@ function paintGameOver() {
   ctx.fillText(
     "Puntuación: " + scoreGame,
     canvas.width / 2,
-    canvas.height / 2 + 40
+    canvas.height / 2 + 40,
   )
+  setTimeout(() => {
+    startMenu.style.display = "flex"
+    updateHighScoreMenu()
+  }, 2000)
 }
 
 function gameLoop(timestamp) {
@@ -140,11 +202,11 @@ function gameLoop(timestamp) {
 
       scoreGame += 10
       if (SPEED_OCTOPUS > 150) {
-        SPEED_OCTOPUS -= 120
+        SPEED_OCTOPUS -= 100
       }
     }
 
-    if(!hasCaughtCachelo){
+    if (!hasCaughtCachelo) {
       octopusBody.pop()
     }
 
@@ -160,5 +222,3 @@ function gameLoop(timestamp) {
 
 paintBackground()
 paintOctopus()
-
-requestAnimationFrame(gameLoop)
