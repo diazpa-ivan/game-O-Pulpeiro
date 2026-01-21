@@ -1,18 +1,42 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>O Pulpeiro 🐙</title>
-  <link rel="stylesheet" href="style.css"/>
-</head>
-<body>
-  <div class="nokia-container">
-  
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>O Pulpeiro 🐙</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div id="phone">
+      <div id="screen">
+        <canvas id="game"></canvas>
 
-    <canvas id="game"></canvas>
-  </div>
+        <div id="splash-screen">
+          <img
+            src="./assets/images/logo-game-Opulpeiro.png"
+            id="splash-image"
+          />
+          <p>Cargando...</p>
+        </div>
 
-  <script src="init.js"></script>
-</body>
+        <div id="start-menu">
+          <h1>O Pulpeiro 🐙</h1>
+
+          <div id="high-scores">
+            <p>Mejores Puntuaciones:</p>
+            <ul id="score-list">
+              <li>🏆 ---</li>
+              <li>---</li>
+              <li>---</li>
+            </ul>
+          </div>
+
+          <button id="start-button">Iniciar partida</button>
+          <div id="sound-toggle">🔊</div>
+        </div>
+      </div>
+    </div>
+
+    <script src="init.js"></script>
+  </body>
 </html>
