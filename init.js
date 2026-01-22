@@ -1,10 +1,14 @@
-const canvas = document.getElementById("game")
+const canvas = document.querySelector("#game")
 const ctx = canvas.getContext("2d")
-const startButton = document.getElementById("start-button")
-const startMenu = document.getElementById("start-menu")
-const splash = document.getElementById("splash-screen")
+const startButton = document.querySelector("#start-button")
+const startMenu = document.querySelector("#start-menu")
+const splash = document.querySelector("#splash-screen")
 const gameMusic = new Audio("assets/song-game.mp3")
-const soundToggle = document.getElementById("sound-toggle")
+const soundToggle = document.querySelector("#sound-toggle")
+const CELL_SIZE = 15
+const GRID_SIZE = 20
+const SCORE_MARGIN = 30
+const GAME_COVER_DURATION = 3000
 gameMusic.loop = true
 gameMusic.preload = "auto"
 gameMusic.load()
@@ -13,19 +17,15 @@ gameMusic.volume = 0.4
 canvas.width = 300
 canvas.height = 330
 
-const CELL_SIZE = 15
-const GRID_SIZE = 20
-const SCORE_MARGIN = 30
 let sizeOctopus = CELL_SIZE
-let octopusBody = [{ x: 4, y: 8 }]
-let positionCachelo = { x: 8, y: 15 }
+let octopusCharacter = [{ x: 4, y: 8 }]
+let initialPositionCachelo = { x: 8, y: 15 }
 let lastTime = 0
-let SPEED_OCTOPUS = 900
+let speedOctopus = 450
 let scoreGame = 0
 let direction = "right"
 let isGameOver = false
 let highScores = [0, 0, 0]
-let musicMuted = false
 
 const octopusImage = new Image()
 octopusImage.src = "assets/images/octopus.png"
@@ -34,19 +34,14 @@ const cacheloImage = new Image()
 cacheloImage.src = "assets/images/cachelo.png"
 
 soundToggle.addEventListener("click", () => {
-  musicMuted = !musicMuted
-  gameMusic.muted = musicMuted
+  gameMusic.muted = !gameMusic.muted
 
-  if (musicMuted) {
-    soundToggle.innerText = "🔇"
-  } else {
-    soundToggle.innerText = "🔊"
-  }
+  soundToggle.innerText = gameMusic.muted ? "🔇" : "🔊"
 })
 
 setTimeout(() => {
   splash.style.display = "none"
-}, 4000)
+}, GAME_COVER_DURATION)
 
 startButton.addEventListener("click", () => {
   resetGame()
@@ -84,8 +79,8 @@ function resetGame() {
   updateHighScoreMenu()
   isGameOver = false
   scoreGame = 0
-  octopusBody = [{ x: 4, y: 8 }]
-  SPEED_OCTOPUS = 900
+  octopusCharacter = [{ x: 4, y: 8 }]
+  speedOctopus = 900
   direction = "right"
   lastTime = 0
 }
@@ -99,7 +94,7 @@ function paintOctopus() {
   let sizeOctopus = CELL_SIZE * 3
   let offset = (sizeOctopus - CELL_SIZE) / 2
 
-  octopusBody.forEach((segmento) => {
+  octopusCharacter.forEach((segmento) => {
     let drawX = segmento.x * CELL_SIZE - offset
     let drawY = segmento.y * CELL_SIZE - offset + SCORE_MARGIN
 
@@ -112,8 +107,8 @@ function paintCachelo() {
 
   let offset = (sizeCachelo - CELL_SIZE) / 2
 
-  let positionX = positionCachelo.x * CELL_SIZE - offset
-  let positionY = positionCachelo.y * CELL_SIZE - offset + SCORE_MARGIN
+  let positionX = initialPositionCachelo.x * CELL_SIZE - offset
+  let positionY = initialPositionCachelo.y * CELL_SIZE - offset + SCORE_MARGIN
 
   ctx.drawImage(cacheloImage, positionX, positionY, sizeCachelo, sizeCachelo)
 }
@@ -173,8 +168,8 @@ function gameLoop(timestamp) {
     return
   }
 
-  if (timestamp - lastTime >= SPEED_OCTOPUS) {
-    let newHead = { x: octopusBody[0].x, y: octopusBody[0].y }
+  if (timestamp - lastTime >= speedOctopus) {
+    let newHead = { x: octopusCharacter[0].x, y: octopusCharacter[0].y }
 
     if (direction === "right") {
       newHead.x += 1
@@ -191,23 +186,24 @@ function gameLoop(timestamp) {
 
     checkGameOver(newHead)
 
-    octopusBody.unshift(newHead)
+    octopusCharacter.unshift(newHead)
 
     const hasCaughtCachelo =
-      newHead.x === positionCachelo.x && newHead.y === positionCachelo.y
+      newHead.x === initialPositionCachelo.x &&
+      newHead.y === initialPositionCachelo.y
 
     if (hasCaughtCachelo) {
-      positionCachelo.x = Math.floor(Math.random() * GRID_SIZE)
-      positionCachelo.y = Math.floor(Math.random() * GRID_SIZE)
+      initialPositionCachelo.x = Math.floor(Math.random() * GRID_SIZE)
+      initialPositionCachelo.y = Math.floor(Math.random() * GRID_SIZE)
 
       scoreGame += 10
-      if (SPEED_OCTOPUS > 150) {
-        SPEED_OCTOPUS -= 100
+      if (speedOctopus > 150) {
+        speedOctopus -= 100
       }
     }
 
     if (!hasCaughtCachelo) {
-      octopusBody.pop()
+      octopusCharacter.pop()
     }
 
     paintBackground()
