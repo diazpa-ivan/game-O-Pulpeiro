@@ -1,10 +1,13 @@
 const canvas = document.getElementById("game")
 const ctx = canvas.getContext("2d")
+// No usamos getElementById --> querySelector
 const startButton = document.getElementById("start-button")
 const startMenu = document.getElementById("start-menu")
 const splash = document.getElementById("splash-screen")
 const gameMusic = new Audio("assets/song-game.mp3")
 const soundToggle = document.getElementById("sound-toggle")
+
+
 gameMusic.loop = true
 gameMusic.preload = "auto"
 gameMusic.load()
@@ -13,11 +16,16 @@ gameMusic.volume = 0.4
 canvas.width = 300
 canvas.height = 330
 
+
+// Constante al principio del todo
 const CELL_SIZE = 15
 const GRID_SIZE = 20
 const SCORE_MARGIN = 30
 let sizeOctopus = CELL_SIZE
+// mainCharacterOctopus
+// octopusCharacter
 let octopusBody = [{ x: 4, y: 8 }]
+// Añadimos initial en algçun sitio
 let positionCachelo = { x: 8, y: 15 }
 let lastTime = 0
 let SPEED_OCTOPUS = 900
@@ -34,8 +42,9 @@ const cacheloImage = new Image()
 cacheloImage.src = "assets/images/cachelo.png"
 
 soundToggle.addEventListener("click", () => {
+  // Refactorizar
   musicMuted = !musicMuted
-  gameMusic.muted = musicMuted
+  gameMusic.muted = !gameMusic.muted
 
   if (musicMuted) {
     soundToggle.innerText = "🔇"
@@ -44,6 +53,7 @@ soundToggle.addEventListener("click", () => {
   }
 })
 
+// Magic
 setTimeout(() => {
   splash.style.display = "none"
 }, 4000)
@@ -140,6 +150,7 @@ function checkGameOver(head) {
 
   if (outGrid) {
     highScores.unshift(scoreGame)
+    // a b no es buen nombre
     highScores.sort((a, b) => {
       return b - a
     })
@@ -173,6 +184,7 @@ function gameLoop(timestamp) {
     return
   }
 
+  // Busca exactamente que hace y ponle nombre.
   if (timestamp - lastTime >= SPEED_OCTOPUS) {
     let newHead = { x: octopusBody[0].x, y: octopusBody[0].y }
 
